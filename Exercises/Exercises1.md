@@ -28,6 +28,6 @@
                     - `T`: The sticky bit is set (mode 1000), but not execute or search permission.
                     - `t`: The sticky bit is set (mode 1000), and is searchable or executable.
 <div align="center">
-<img src="image/01.png" style="width:90%;">
+<img src="Image/01.png" style="width:90%;">
 </div>
 
