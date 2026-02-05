@@ -12,38 +12,38 @@
 - the `echo` program: simply prints out its arguments.
 - argument parsing 解析: split it by whitespace, indicate them one by one 
 <div align="center">
-<img src="image.png" style="width:70%;">
+<img src="image/image.png" style="width:70%;">
 </div>
 
 - backslash \ : an escape character that says don't treat the next character as special, so in the case of argument parsing, backslash space means literal space, do not split on this, this isn't a word boundary, it's a literal space that's a part of an argument.
 <div align="center">
-<img src="image-1.png" style="width:70%;">
+<img src="image/image-1.png" style="width:70%;">
 </div>
 
 - `man` program: short for manual, **use `q` to exit**
 - `--help`: a short version of manual page
 <div align="center">
-<img src="image-2.png" style="width:70%;">
+<img src="image/image-2.png" style="width:70%;">
 </div>
 
 - `cd`: change directory
 - `.`: current directory
 - `..`: parent directory(one level up)
 <div align="center">
-<img src="image-3.png" style="width:70%;">
+<img src="image/image-3.png" style="width:70%;">
 </div>
 
 - `cd ~`: back to home 
 - `Tab`: 
 <div align="center">
-<img src="image-4.png" style="width:70%;">
+<img src="image/image-4.png" style="width:70%;">
 </div>
 
 ---
 ## What is available in the shell?
 - `$PATH`: an environment variable that lists which directories the shell should search for programs when it is given a command. `:` separated lists.
 <div align="center">
-<img src="image-5.png" style="width:70%;">
+<img src="image/image-5.png" style="width:70%;">
 </div>
 
 - `ls`: short for list
@@ -63,7 +63,7 @@
   -  `>>file` will append to `file` rather than overwrite it. 
   -  `<file` tells the shell to read from file instead of from your keyboard as the standard input to a program.
 <div align="center">
-<img src="image-6.png" style="width:70%;">
+<img src="image/image-6.png" style="width:70%;">
 </div>
 
 - conditionals
