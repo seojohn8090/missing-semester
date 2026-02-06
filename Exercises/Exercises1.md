@@ -33,7 +33,7 @@
                 - `t`: The sticky bit is set (mode 1000), and is searchable or executable.
 ### 3. In the command `find ~/Downloads -type f -name "*.zip" -mtime +30`, the `*.zip` is a “glob”. What is a glob? Create a test directory with some files and experiment with patterns like `ls *.txt`, `ls file?.txt`, and `ls {a,b,c}.txt`. See [Pattern Matching](https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html) in the Bash manual.
 <div align="center">
-<img src="image/02.png" style="width:70%;">
+<img src="image/01.png" style="width:90%;">
 </div>
 
 - The command means "Find all ZIP files in your Downloads directory that were last modified more than 30 days ago".
