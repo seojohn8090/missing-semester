@@ -31,6 +31,7 @@
             - other permissions
                 - `T`: The sticky bit is set (mode 1000), but not execute or search permission.
                 - `t`: The sticky bit is set (mode 1000), and is searchable or executable.
+
 ### 3. In the command `find ~/Downloads -type f -name "*.zip" -mtime +30`, the `*.zip` is a “glob”. What is a glob? Create a test directory with some files and experiment with patterns like `ls *.txt`, `ls file?.txt`, and `ls {a,b,c}.txt`. See [Pattern Matching](https://www.gnu.org/software/bash/manual/html_node/Pattern-Matching.html) in the Bash manual.
 <div align="center">
 <img src="Image/02.png" style="width:90%;">
@@ -101,6 +102,7 @@
 - `cd` must be a builtin because child processes cannot modify the execution environment of their parent processes. 
 - A standalone `cd` would run as a child process of the shell, only changing its own copied current working directory with no effect on the parent shell’s environment. 
 - As a builtin, `cd` executes directly in the shell’s parent process, allowing it to modify the shell’s actual current working directory for the active session.
+
 ### 8. Write a script that takes a filename as an argument (`$1`) and checks whether the file exists using `test -f` or `[ -f ... ]`. It should print different messages depending on whether the file exists. See [Bash Conditional Expressions](https://www.gnu.org/software/bash/manual/html_node/Bash-Conditional-Expressions.html).
 <div align="center">
 <img src="Image/11.png" style="width:70%;">
@@ -124,5 +126,45 @@
 <img src="Image/14.png" style="width:70%;">
 </div>   
 
-### 12. Modify the flaky test script from the lecture to accept the test command as an argument instead of hardcoding cargo test my_test. (Hint: `$1` or `$@`). See Special Parameters.
+### 12. Modify the flaky test script from the lecture to accept the test command as an argument instead of hardcoding `cargo test my_test`. (Hint: `$1` or `$@`). See [Special Parameters](https://www.gnu.org/software/bash/manual/html_node/Special-Parameters.html).
+- Due to issues encountered while installing stress via Homebrew, the corresponding section (#) related to the flaky test is presented as follows.
+<div align="center">
+<img src="Image/16.png" style="width:30%;">
+<img src="Image/15.png" style="width:70%;">
+</div>   
 
+### 13. Use pipes to find the 5 most common file extensions in your home directory. (Hint: combine `find`, `grep` or `sed` or `awk`, `sort`, `uniq -c`, and `head`.)
+- Due to the excessive length of the output, only the input and the final output are shown here.
+  - Input: `find ~ -type f | awk -F. '{print $NF}' | sort | uniq -c | sort -nr | head -5`
+    - `awk`, where the period character is specified as the field separator (`-F.`) so that each file path is split at **dots**, and the **last field** (`$NF`) is extracted as the file extension. These extensions are sorted **alphabetically** using `sort`, which is required before aggregation. The `uniq -c` command then **groups** identical extensions and **counts** their occurrences. The results are subsequently sorted numerically in **descending** order using `sort -nr`, ensuring that the most frequent extensions appear first. Finally, `head -5` limits the output to the five most common file extensions.
+  - Final Output: 
+    ```
+    95811 py
+    78632 pyc
+    34450 h
+    20873 pyi
+    18024 js
+    ```
+- A `pipeline` is a sequence of one or more commands separated by one of the control operators `‘|’` or `‘|&’`. The output of each command in the pipeline is connected via a pipe to the input of the next command. That is, each command reads the previous command’s output. ([Pipelines](https://www.gnu.org/software/bash/manual/html_node/Pipelines.html))
+
+### 14. `xargs` converts lines from stdin into command arguments. Use `find` and `xargs` together (not `find -exec`) to find all `.sh` files in a directory and count the lines in each with `wc -l`. Bonus: make it handle filenames with spaces. (Hint: `-print0` and `-0`). See `man xargs`.
+
+-  `-0`: Change `xargs` to expect NUL characters as separators, instead of spaces and newlines. This is expected to be used in concert with the `-print0` function in find(1). (from `man xargs`)
+-  Correct Solution should be `find . -name "*.sh" -print0 | xargs -0 wc -l`
+
+### 15. Use `curl` to fetch the HTML of the course website (https://missing.csail.mit.edu/) and pipe it to `grep` to count how many lectures are listed. (Hint: look for a pattern that appears once per lecture; use `curl -s` to silence the progress output.)
+
+<div align="center">
+<img src="Image/17.png" style="width:90%;">
+</div>   
+
+- `curl` (Client URL) is a command-line tool used to fetch data from a URL, such as downloading a web page’s HTML.
+- `grep` (`g / regular expression / p`) is a tool that searches text and filters lines that match a given pattern.
+- When counting lectures from the course website, a simple match on `href="/2026/"` is insufficient because the navigation bar also contains a link to `href="/2026/"`, which is not a lecture. To avoid this extra match, the pattern is refined to only count links whose paths extend beyond `/2026/`, as each actual lecture page has a unique subpath under `/2026/`. 
+- `[^"]*` means “match any characters except a double quote,” which safely consumes the URL without crossing its boundary. The trailing `/"` is added to ensure that the match ends at the closing quote of the URL and that the path is complete.
+  
+### 16. `jq` is a powerful tool for processing JSON data. Fetch the sample data at https://microsoftedge.github.io/Demos/json-dummy-data/64KB.json with `curl` and use `jq` to extract just the names of people whose version is greater than 6. (Hint: pipe to `jq .` first to see the structure; then try `jq '.[] | select(...) | .name'`)
+
+### 17. `awk` can filter lines based on column values and manipulate output. For example, `awk '$3 ~ /pattern/ {$4=""; print}'` prints only lines where the third column matches `pattern`, while omitting the fourth column. Write an `awk` command that prints only lines where the second column is greater than 100, and swaps the first and third columns. Test with: `printf 'a 50 x\nb 150 y\nc 200 z\n'`
+
+### 18. Dissect the SSH log pipeline from the lecture: what does each step do? Then build something similar to find your most-used shell commands `from ~/.bash_history` (or `~/.zsh_history`).
