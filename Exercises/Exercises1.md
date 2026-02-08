@@ -164,7 +164,34 @@
 - `[^"]*` means “match any characters except a double quote,” which safely consumes the URL without crossing its boundary. The trailing `/"` is added to ensure that the match ends at the closing quote of the URL and that the path is complete.
   
 ### 16. `jq` is a powerful tool for processing JSON data. Fetch the sample data at https://microsoftedge.github.io/Demos/json-dummy-data/64KB.json with `curl` and use `jq` to extract just the names of people whose version is greater than 6. (Hint: pipe to `jq .` first to see the structure; then try `jq '.[] | select(...) | .name'`)
+<div align="center">
+<img src="Image/19.png" style="width:100%;">
+<img src="Image/18.png" style="width:100%;">
+</div>   
+
 
 ### 17. `awk` can filter lines based on column values and manipulate output. For example, `awk '$3 ~ /pattern/ {$4=""; print}'` prints only lines where the third column matches `pattern`, while omitting the fourth column. Write an `awk` command that prints only lines where the second column is greater than 100, and swaps the first and third columns. Test with: `printf 'a 50 x\nb 150 y\nc 200 z\n'`
+<div align="center">
+<img src="Image/20.png" style="width:100%;">
+</div>   
 
+- `printf`: print formatted
+  
 ### 18. Dissect the SSH log pipeline from the lecture: what does each step do? Then build something similar to find your most-used shell commands `from ~/.bash_history` (or `~/.zsh_history`).
+
+```
+missing:~$ ssh myserver 'journalctl -u sshd -b-1 | grep "Disconnected from"' \
+  | sed -E 's/.*Disconnected from .* user (.*) [^ ]+ port.*/\1/' \
+  | sort | uniq -c \
+  | sort -nk1,1 | tail -n10 \
+  | awk '{print $2}' | paste -sd,
+postgres,mysql,oracle,dell,ubuntu,inspur,test,admin,user,root
+```
+- This command first connects via `SSH` to the remote host `myserver` and runs `journalctl -u sshd -b-1 | grep "Disconnected from"` on that host, where `journalctl` reads the systemd logs, `-u sshd` filters only the SSH daemon service, and `-b-1` limits it to the previous boot, while `grep "Disconnected from"` selects only the lines containing SSH disconnection messages. 
+- The output is then piped into `sed -E 's/.*Disconnected from .* user (.*) [^ ]+ port.*/\1/'` which uses a regular expression to extract just the username from each line. 
+- Next, `sort` alphabetically arranges the usernames so that identical names are grouped together, and `uniq -c` counts how many times each username appears. 
+- After that, `sort -nk1,1 | tail -n10` sorts the counts numerically and selects the top ten entries by frequency. 
+- Then `awk '{print $2}'` extracts only the second column, which is the username, removing the count, and finally `paste -sd`, combines all these usernames into a single comma-separated line, producing a concise list of the most frequent SSH users.
+<div align="center">
+<img src="Image/21.png" style="width:70%;">
+</div>   
