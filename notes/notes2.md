@@ -21,7 +21,18 @@
 <img src="image/02_05.png" style="width:75%;">
 </div>
 
+- redirection
+<div align="center">
+<img src="image/02_06.png" style="width:75%;">
+</div>
+
+- `fzf` (fuzzy finder)
+<div align="center">
+<img src="image/02_07.png" style="width:50%;">
+</div>
+
 ### Environment variables
+
 ### Return codes
 ### Signals
 ---
