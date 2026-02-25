@@ -40,7 +40,7 @@
 - The command means "Find all ZIP files in your Downloads directory that were last modified more than 30 days ago".
 - Glob: simpler patterns (than regular expression) that the shell (or programs like find) uses to match filenames. 更加便捷的用来查找符合特定规则的目录和文件的方法
 - `*` matches any string, including the null string.
-    ```
+    ```bash
     ls *.zip
     ls file*
     ls **/*
@@ -48,7 +48,7 @@
     ```
 - `?` matches any single character.
 - `[...]` (bracket expression) matches a single character.
-    ```
+    ```bash
     ls file[0-9].txt
     ls report_[A-Z].pdf
     ls file[^0-9].txt 
@@ -179,7 +179,7 @@
   
 ### 18. Dissect the SSH log pipeline from the lecture: what does each step do? Then build something similar to find your most-used shell commands `from ~/.bash_history` (or `~/.zsh_history`).
 
-```
+```bash
 missing:~$ ssh myserver 'journalctl -u sshd -b-1 | grep "Disconnected from"' \
   | sed -E 's/.*Disconnected from .* user (.*) [^ ]+ port.*/\1/' \
   | sort | uniq -c \
