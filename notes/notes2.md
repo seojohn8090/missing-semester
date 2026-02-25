@@ -1,7 +1,7 @@
 # Lecture 2_Command-line Environment
 ---
 ## The Command Line Interface (CLI) 命令行界面
-### Arguments 参数
+### Arguments
 - Arguments are plain strings in shell.
 <div align="center">
 <img src="image/02_02.png" style="width:30%;">
@@ -32,7 +32,28 @@
 </div>
 
 ### Environment variables
+<div align="center">
+<img src="image/02_08.png" style="width:50%;">
+</div>
 
+- Command Substitution (命令替换)
+```bash
+% files=$(ls)            
+% echo $files | grep "missing"
+missing-semester
+```
+- Process Substitution (进程替换)
+- TZ (time zone)
+```bash
+% date              
+Wed Feb 25 14:20:07 CST 2026
+% TZ=Asia/Seoul date
+Wed Feb 25 15:20:08 KST 2026
+```
 ### Return codes
+- `echo $?` access the return code of the last command
+- Boolean operators `&&` and `||`: conditionally run commands based on the success or failure of previous commands, where success is determined based on whether the return code is zero or not. (same as `if` and `while` statements)
+   
 ### Signals
----
+- killing a program: `^C` `Ctrl-C` `SIGINT` or `^\` `Ctrl-\` `SIGQUIT`
+- `SIGSTOP` pauses a process. In the terminal, typing `Ctrl-Z` will prompt the shell to send a `SIGTSTP` signal, short for Terminal Stop.
