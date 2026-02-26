@@ -36,4 +36,93 @@ usage: rm [-f | -i] [-dIPRrvWx] file ...
 > _CE_M=''
 ```
 ### Environment Variables
-### 1. Write bash functions `marco` and `polo` that do the following: whenever you execute marco the current working directory should be saved in some manner, then when you execute `polo`, no matter what directory you are in, `polo` should `cd` you back to the directory where you executed `marco`. For ease of debugging you can write the code in a file `marco.sh` and (re)load the definitions to your shell by executing `source marco.sh`.
+### 1. Write bash functions `marco` and `polo` that do the following: whenever you execute `marco` the current working directory should be saved in some manner, then when you execute `polo`, no matter what directory you are in, `polo` should `cd` you back to the directory where you executed `marco`. For ease of debugging you can write the code in a file `marco.sh` and (re)load the definitions to your shell by executing `source marco.sh`.
+```bash
+% touch marco.sh
+% nano marco.sh
+```
+```bash
+#!/bin/bash
+marco() {
+    MARCO_DIR="$PWD"
+}
+polo() {
+    cd "$MARCO_DIR"
+}
+```
+```bash
+% source marco.sh
+```
+### Return Codes
+### 1. Say you have a command that fails rarely. In order to debug it you need to capture its output but it can be time consuming to get a failure run. Write a bash script that runs the following script until it fails and captures its standard output and error streams to files and prints everything at the end. Bonus points if you can also report how many runs it took for the script to fail.
+- The script simulates a command that fails rarely by generating a random number and exiting with an error only when the number equals 42 (about 1% probability). Most runs succeed, but occasionally it prints an error message and exits with status 1. This models a nondeterministic bug that requires repeated execution to capture a failure for debugging.
+```bash
+% touch random.sh
+% nano random.sh
+% chmod +x random.sh
+% touch run_until_fail.sh
+% nano run_until_fail.sh
+```
+```bash
+#!/usr/bin/env bash
+count=0
+while ./random.sh > out.txt 2> err.txt
+do
+    count=$((count+1))
+done
+echo "The script failed after $((count+1)) runs."
+echo "----- STDOUT -----"
+cat out.txt
+echo "----- STDERR -----"
+cat err.txt
+```
+```bash
+% chmod +x run_until_fail.sh
+% ./run_until_fail.sh
+The script failed after 26 runs.
+----- STDOUT -----
+Something went wrong
+----- STDERR -----
+The error was using magic numbers
+```
+### Signals and Job Control
+### 1. Start a `sleep 10000` job in a terminal, background it with `Ctrl-Z` and continue its execution with `bg`. Now use `pgrep` to find its pid and `pkill` to kill it without ever typing the pid itself. (Hint: use the `-af` flags).
+```bash
+% sleep 10000
+^Z
+zsh: suspended  sleep 10000
+% bg
+[1]  + continued  sleep 10000
+% pgrep -afl sleep
+15497
+% pkill -f sleep
+[1]  + terminated  sleep 10000
+```
+- `-a`, List the full command line as well as the process ID.
+- `-f`, The pattern is normally only matched against the process name. When `-f` is set, the full command line is used.
+- `-l`, List the process name as well as the process ID.  
+
+### 2. Say you don’t want to start a process until another completes. How would you go about it? In this exercise, our limiting process will always be `sleep 60 &`. One way to achieve this is to use the  [`wait`](https://www.man7.org/linux/man-pages/man1/wait.1p.html) command. Try launching the sleep command and having an `ls` wait until the background process finishes. 
+### However, this strategy will fail if we start in a different bash session, since `wait` only works for child processes. One feature we did not discuss in the notes is that the `kill` command’s exit status will be zero on success and nonzero otherwise. `kill -0` does not send a signal but will give a nonzero exit status if the process does not exist. Write a bash function called `pidwait` that takes a pid and waits until the given process completes. You should use `sleep` to avoid wasting CPU unnecessarily.
+```bash
+% sleep 60 &
+[2] 15947
+% pid=$!    
+% wait $pid 
+ls
+[2]  - done       sleep 60                 
+% ls
+```
+```bash
+% pidwait() {
+  pid=$1
+  while kill -0 "$pid" 2>/dev/null; do
+    sleep 1
+  done
+}
+% sleep 60 &
+[2] 16180
+% pidwait 16180
+[2]  - done       sleep 60
+```
+
